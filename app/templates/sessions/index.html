@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}Learning Sessions — SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Learning Sessions</h2>
+            <p class="text-muted small mb-0">Coordinate peer sessions, launch meeting rooms, and record completion.</p>
+        </div>
+        <a href="{{ url_for('matching.index') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+            <i data-lucide="plus" style="width: 16px;"></i> Request New Session
+        </a>
+    </div>
+
+    <!-- Status Tabs -->
+    <div class="card card-custom p-2 mb-4 bg-white shadow-sm">
+        <ul class="nav nav-pills gap-2">
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status_filter == 'all' }} py-2 px-3 fw-semibold small" href="{{ url_for('sessions.index', status='all') }}">
+                    All Sessions ({{ sessions|length }})
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status_filter == 'pending' }} py-2 px-3 fw-semibold small" href="{{ url_for('sessions.index', status='pending') }}">
+                    Pending Requests ({{ pending_count }})
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status_filter == 'accepted' }} py-2 px-3 fw-semibold small" href="{{ url_for('sessions.index', status='accepted') }}">
+                    Upcoming / Accepted ({{ accepted_count }})
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ 'active' if status_filter == 'completed' }} py-2 px-3 fw-semibold small" href="{{ url_for('sessions.index', status='completed') }}">
+                    Completed ({{ completed_count }})
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Sessions List -->
+    <div class="row g-4">
+        {% if sessions %}
+            {% for s in sessions %}
+                {% set is_teacher = (s.teacher_id == current_user.id) %}
+                {% set partner = s.learner if is_teacher else s.teacher %}
+                <div class="col-lg-6">
+                    <div class="card card-custom h-100 p-4 shadow-sm border-start border-4 
+                        {% if s.status == 'accepted' %}border-success
+                        {% elif s.status == 'pending' %}border-warning
+                        {% elif s.status == 'completed' %}border-info
+                        {% else %}border-secondary{% endif %}">
+                        
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <span class="badge bg-light text-primary border small mb-1">{{ s.skill.category }}</span>
+                                <h5 class="fw-bold text-dark mb-0">{{ s.skill.skill_name }}</h5>
+                            </div>
+                            <span class="badge rounded-pill 
+                                {% if s.status == 'accepted' %}bg-success text-white
+                                {% elif s.status == 'pending' %}bg-warning text-dark
+                                {% elif s.status == 'completed' %}bg-info text-white
+                                {% else %}bg-secondary text-white{% endif %} px-3 py-1">
+                                {{ s.status|capitalize }}
+                            </span>
+                        </div>
+
+                        <!-- Participants -->
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-6 border-end">
+                                    <div class="text-muted small" style="font-size: 0.72rem;">TEACHER (+5 Credits)</div>
+                                    <div class="d-flex align-items-center gap-2 mt-1">
+                                        <img src="{{ s.teacher.avatar_url or 'https://api.dicebear.com/7.x/bottts/svg?seed=' + s.teacher.full_name }}" class="rounded-circle" style="width: 28px; height: 28px;">
+                                        <span class="fw-bold small text-dark">{{ s.teacher.full_name }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6 ps-3">
+                                    <div class="text-muted small" style="font-size: 0.72rem;">LEARNER (-5 Credits)</div>
+                                    <div class="d-flex align-items-center gap-2 mt-1">
+                                        <img src="{{ s.learner.avatar_url or 'https://api.dicebear.com/7.x/bottts/svg?seed=' + s.learner.full_name }}" class="rounded-circle" style="width: 28px; height: 28px;">
+                                        <span class="fw-bold small text-dark">{{ s.learner.full_name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schedule & Agenda Notes -->
+                        <div class="small text-secondary mb-3">
+                            <div class="mb-1"><i data-lucide="calendar" class="me-1 text-primary" style="width: 14px;"></i> <strong>{{ s.session_date.strftime('%A, %b %d, %Y at %H:%M') }}</strong> ({{ s.duration_minutes }} mins)</div>
+                            {% if s.notes %}
+                                <div class="fst-italic text-muted mt-2 p-2 bg-white rounded border">
+                                    "{{ s.notes }}"
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Actions Bar based on Status & Role -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center border-top pt-3 mt-auto gap-2">
+                            {% if s.status == 'pending' %}
+                                {% if is_teacher %}
+                                    <div class="d-flex gap-2 w-100">
+                                        <form method="POST" action="{{ url_for('sessions.accept_session', session_id=s.id) }}" class="flex-grow-1">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn btn-success btn-sm w-100">Accept Request</button>
+                                        </form>
+                                        <form method="POST" action="{{ url_for('sessions.reject_session', session_id=s.id) }}" class="flex-grow-1">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm w-100">Decline</button>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted small fst-italic"><i data-lucide="clock" style="width: 14px;"></i> Waiting for {{ s.teacher.full_name }} to accept...</span>
+                                    <form method="POST" action="{{ url_for('sessions.cancel_session', session_id=s.id) }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-light btn-sm text-danger border">Cancel</button>
+                                    </form>
+                                {% endif %}
+
+                            {% elif s.status == 'accepted' %}
+                                <a href="{{ s.meeting_link or '#' }}" target="_blank" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+                                    <i data-lucide="video" style="width: 14px;"></i> Join Meeting Room
+                                </a>
+
+                                <form method="POST" action="{{ url_for('sessions.complete_session', session_id=s.id) }}" onsubmit="return confirm('Mark this session as completed? This will finalize credits and update skill progress.');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-success btn-sm d-flex align-items-center gap-1">
+                                        <i data-lucide="check" style="width: 14px;"></i> Mark Completed
+                                    </button>
+                                </form>
+
+                            {% elif s.status == 'completed' %}
+                                <span class="badge bg-success-subtle text-success small py-2 px-3">
+                                    <i data-lucide="check-check" style="width: 14px;"></i> Credits Exchanged
+                                </span>
+                                <!-- Review Button -->
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#reviewModal{{ s.id }}">
+                                    <i data-lucide="star" style="width: 14px;"></i> Leave Feedback
+                                </button>
+                            {% else %}
+                                <span class="text-muted small">Session closed.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Modal -->
+                <div class="modal fade" id="reviewModal{{ s.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="POST" action="{{ url_for('sessions.submit_review', session_id=s.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <div class="modal-header">
+                                    <h5 class="modal-title fw-bold">Session Feedback & Rating</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold">Star Rating (1 to 5)</label>
+                                        <select name="rating" class="form-select">
+                                            <option value="5" selected>5 Stars - Exceptional Peer Mentor</option>
+                                            <option value="4">4 Stars - Very Helpful</option>
+                                            <option value="3">3 Stars - Good</option>
+                                            <option value="2">2 Stars - Fair</option>
+                                            <option value="1">1 Star - Unsatisfactory</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold">Learning Outcome / Takeaway</label>
+                                        <input type="text" name="learning_outcome" class="form-control" placeholder="e.g. Understood API authentication and SQLite schema">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-semibold">Feedback Comment *</label>
+                                        <textarea name="feedback" class="form-control" rows="3" placeholder="Share your experience working with this student partner..." required></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <i data-lucide="calendar" class="text-muted mb-2" style="width: 48px; height: 48px;"></i>
+                <h5 class="fw-bold">No sessions found</h5>
+                <p class="text-muted small">Reach out to a peer mentor to schedule your next learning session.</p>
+                <a href="{{ url_for('matching.index') }}" class="btn btn-primary btn-sm">Find a Mentor</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

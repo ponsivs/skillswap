@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}How SkillSwap Works — Step by Step Guide{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center max-w-700 mx-auto mb-5">
+        <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-semibold mb-2">Platform Mechanics</span>
+        <h1 class="display-5 fw-bold">How SkillSwap Works</h1>
+        <p class="lead text-muted">A transparent, fair, credit-based peer learning model designed for students.</p>
+    </div>
+
+    <!-- 4 Key Steps Detailed -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-custom h-100 p-4 border-top border-4 border-primary">
+                <span class="badge bg-primary text-white rounded-pill mb-3" style="width: fit-content;">Phase 1</span>
+                <h4 class="fw-bold">1. Build Your Profile</h4>
+                <p class="text-muted small">
+                    List skills you're confident teaching (e.g. Python, Video Editing) and skills you're eager to learn (e.g. UI/UX Design, Public Speaking).
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-custom h-100 p-4 border-top border-4 border-secondary">
+                <span class="badge bg-secondary text-white rounded-pill mb-3" style="width: fit-content;">Phase 2</span>
+                <h4 class="fw-bold">2. Intelligent Matching</h4>
+                <p class="text-muted small">
+                    Our matching algorithm searches for reciprocal pairs (where A teaches what B wants, and B teaches what A wants) or direct peer tutors.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-custom h-100 p-4 border-top border-4 border-info">
+                <span class="badge bg-info text-white rounded-pill mb-3" style="width: fit-content;">Phase 3</span>
+                <h4 class="fw-bold">3. Peer Sessions</h4>
+                <p class="text-muted small">
+                    Send a learning request, select a convenient date, and meet in our in-app room to practice practical skills together.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-custom h-100 p-4 border-top border-4 border-success">
+                <span class="badge bg-success text-white rounded-pill mb-3" style="width: fit-content;">Phase 4</span>
+                <h4 class="fw-bold">4. Credits & Progress</h4>
+                <p class="text-muted small">
+                    Completing a teaching session earns you 5 credits. Your Personal Skill Map updates automatically as your mastery increases.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credit System FAQ -->
+    <div class="card card-custom p-4 p-md-5 border-0 shadow-sm bg-white" id="credits">
+        <h3 class="fw-bold mb-3">Understanding the Credit-Based Exchange System</h3>
+        <p class="text-secondary mb-4">
+            SkillSwap utilizes an internal token system called <strong>Knowledge Credits</strong> to keep skill sharing completely equitable and free of financial hurdles.
+        </p>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-3 rounded-3 bg-light border">
+                    <div class="fw-bold text-success mb-1">+15 Starter Credits</div>
+                    <p class="small text-muted mb-0">Every newly registered student receives 15 complimentary credits upon onboarding to book their first 3 peer sessions immediately.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 rounded-3 bg-light border">
+                    <div class="fw-bold text-primary mb-1">+5 Credits for Teaching</div>
+                    <p class="small text-muted mb-0">Whenever you conduct a learning session and help a peer student, 5 credits are automatically credited to your balance.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 rounded-3 bg-light border">
+                    <div class="fw-bold text-secondary mb-1">-5 Credits for Learning</div>
+                    <p class="small text-muted mb-0">Accessing a peer session costs 5 credits, incentivizing students to also give back and share their own knowledge.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

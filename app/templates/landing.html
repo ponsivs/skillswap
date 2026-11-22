@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+
+{% block title %}SkillSwap — Share Skills. Exchange Knowledge. Grow Together.{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="hero-wrapper">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white border shadow-sm mb-3">
+                    <span class="badge bg-primary text-white rounded-pill">EdTech 2.0</span>
+                    <span class="small fw-semibold text-secondary">Peer-to-Peer Learning Platform</span>
+                </div>
+                <h1 class="hero-title mb-4">
+                    Your Skills Have Value. <br>
+                    <span class="hero-gradient-text">Share Them.</span> <br>
+                    Grow Together.
+                </h1>
+                <p class="lead text-muted mb-4 fs-5">
+                    Discover talented peers, exchange practical knowledge, earn learning credits, and track your growth on an interactive personal skill map.
+                </p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="{{ url_for('matching.index') }}" class="btn btn-gradient btn-lg d-flex align-items-center gap-2">
+                        <i data-lucide="sparkles" style="width: 20px;"></i>
+                        <span>Find Your Skill Partner</span>
+                    </a>
+                    <a href="{{ url_for('main.how_it_works') }}" class="btn btn-outline-primary btn-lg d-flex align-items-center gap-2">
+                        <i data-lucide="play-circle" style="width: 20px;"></i>
+                        <span>Explore How It Works</span>
+                    </a>
+                </div>
+                <div class="d-flex align-items-center gap-3 pt-2">
+                    <div class="d-flex">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Alex" class="rounded-circle border border-white" style="width: 38px; height: 38px; margin-right: -10px;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Priya" class="rounded-circle border border-white" style="width: 38px; height: 38px; margin-right: -10px;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Marcus" class="rounded-circle border border-white" style="width: 38px; height: 38px; margin-right: -10px;">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Elena" class="rounded-circle border border-white" style="width: 38px; height: 38px;">
+                    </div>
+                    <div class="small text-muted">
+                        <span class="fw-bold text-dark">500+ student swaps</span> completed this month
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Visual Illustration -->
+            <div class="col-lg-6">
+                <div class="card card-custom p-4 shadow-xl border-0 position-relative overflow-hidden" style="background: linear-gradient(145deg, #ffffff 0%, #f3f4f6 100%);">
+                    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="badge-custom badge-reciprocal">
+                                <i data-lucide="zap" style="width: 14px;"></i> Intelligent Reciprocal Match
+                            </div>
+                        </div>
+                        <span class="badge bg-success text-white px-2 py-1">98% Compatibility</span>
+                    </div>
+
+                    <!-- Reciprocal Match Visual Graphic -->
+                    <div class="row align-items-center g-3 my-2">
+                        <!-- Student A -->
+                        <div class="col-5 text-center">
+                            <div class="p-3 bg-white rounded-3 shadow-sm border text-center">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=AlexRivera" class="rounded-circle mb-2" style="width: 56px; height: 56px;">
+                                <div class="fw-bold text-dark small">Alex Rivera</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Stanford CS</div>
+                                <div class="mt-2">
+                                    <span class="badge bg-success-subtle text-success small" style="font-size: 0.7rem;">Teaches: Python</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Swap Arrow Center -->
+                        <div class="col-2 text-center">
+                            <div class="p-2 rounded-circle bg-primary text-white shadow d-inline-flex">
+                                <i data-lucide="repeat" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div class="small fw-bold text-primary mt-1" style="font-size: 0.68rem;">MUTUAL SWAP</div>
+                        </div>
+
+                        <!-- Student B -->
+                        <div class="col-5 text-center">
+                            <div class="p-3 bg-white rounded-3 shadow-sm border text-center">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=PriyaSharma" class="rounded-circle mb-2" style="width: 56px; height: 56px;">
+                                <div class="fw-bold text-dark small">Priya Sharma</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">UC Berkeley Design</div>
+                                <div class="mt-2">
+                                    <span class="badge bg-primary-subtle text-primary small" style="font-size: 0.7rem;">Teaches: UI/UX</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow summary -->
+                    <div class="p-3 bg-white rounded-3 border mt-3 small text-secondary">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span><i data-lucide="arrow-right-left" class="me-1 text-primary"></i> Exchange Mechanism</span>
+                            <span class="fw-bold text-dark">Balanced Knowledge Credits</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span><i data-lucide="shield-check" class="me-1 text-success"></i> Privacy Guarantee</span>
+                            <span class="text-success fw-bold">Verified In-App Session</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PLATFORM METRICS -->
+<section class="py-4 bg-white border-top border-bottom">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-3 col-6">
+                <div class="fs-2 fw-bold text-primary">{{ total_students }}+</div>
+                <div class="small text-muted fw-semibold">Active Student Learners</div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="fs-2 fw-bold text-secondary">{{ total_skills }}+</div>
+                <div class="small text-muted fw-semibold">Skills Available to Learn</div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="fs-2 fw-bold text-success">{{ total_sessions }}+</div>
+                <div class="small text-muted fw-semibold">Completed Peer Sessions</div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="fs-2 fw-bold text-info">100%</div>
+                <div class="small text-muted fw-semibold">Credit-Powered Exchange</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- THE PROBLEM & SOLUTION -->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-semibold mb-2">The Learning Challenge</span>
+            <h2 class="fw-bold">Why Traditional Learning Leaves Students Isolated</h2>
+            <p class="text-muted">Expensive bootcamps and static courses don't provide the interactive peer guidance students need.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card card-custom h-100 p-4 border-start border-4 border-danger">
+                    <div class="stat-icon-wrapper bg-danger-subtle text-danger mb-3">
+                        <i data-lucide="search-x"></i>
+                    </div>
+                    <h5 class="fw-bold">Fragmented Peer Discovery</h5>
+                    <p class="text-muted small mb-0">Students struggle to find reliable classmates or mentors who possess the practical skills they want to learn.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-custom h-100 p-4 border-start border-4 border-warning">
+                    <div class="stat-icon-wrapper bg-warning-subtle text-warning mb-3">
+                        <i data-lucide="lock"></i>
+                    </div>
+                    <h5 class="fw-bold">Untapped Student Knowledge</h5>
+                    <p class="text-muted small mb-0">Every student excels at something—whether coding, speech, or video editing—yet this knowledge remains locked away.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-custom h-100 p-4 border-start border-4 border-primary">
+                    <div class="stat-icon-wrapper bg-primary-subtle text-primary mb-3">
+                        <i data-lucide="wallet"></i>
+                    </div>
+                    <h5 class="fw-bold">High Tutoring Costs</h5>
+                    <p class="text-muted small mb-0">Commercial tutoring is costly and intimidating. Students learn best when exchanging skills directly with peers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OUR SOLUTION SECTION -->
+<section class="py-5 bg-white border-top border-bottom">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-1 rounded-pill fw-semibold mb-2">The SkillSwap Solution</span>
+            <h2 class="fw-bold">A Collaborative Ecosystem Where Everyone Teaches & Learns</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="card card-custom h-100 p-4 card-hover-elevate">
+                    <div class="stat-icon-wrapper bg-primary text-white mb-3">
+                        <i data-lucide="git-merge"></i>
+                    </div>
+                    <h5 class="fw-bold fs-6">Reciprocal Matching</h5>
+                    <p class="text-muted small">Our algorithm finds students whose teach and learn interests complement yours.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card card-custom h-100 p-4 card-hover-elevate">
+                    <div class="stat-icon-wrapper bg-secondary text-white mb-3">
+                        <i data-lucide="coins"></i>
+                    </div>
+                    <h5 class="fw-bold fs-6">Credit-Based Exchange</h5>
+                    <p class="text-muted small">Earn 5 credits whenever you teach; spend 5 credits to learn. No financial barriers.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card card-custom h-100 p-4 card-hover-elevate">
+                    <div class="stat-icon-wrapper bg-info text-white mb-3">
+                        <i data-lucide="network"></i>
+                    </div>
+                    <h5 class="fw-bold fs-6">Personal Skill Map</h5>
+                    <p class="text-muted small">An interactive node graph that visually tracks your learning journey in real-time.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card card-custom h-100 p-4 card-hover-elevate">
+                    <div class="stat-icon-wrapper bg-success text-white mb-3">
+                        <i data-lucide="shield-check"></i>
+                    </div>
+                    <h5 class="fw-bold fs-6">Safe & Moderated</h5>
+                    <p class="text-muted small">Protected communication, privacy-first profiles, and ratings for quality assurance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS STEP-BY-STEP -->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-semibold mb-2">Step-by-Step Flow</span>
+            <h2 class="fw-bold">How SkillSwap Works</h2>
+            <p class="text-muted">Start exchanging skills in four simple steps.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="p-4 bg-white rounded-3 border h-100 position-relative">
+                    <div class="fw-bold text-primary display-6 mb-2">01</div>
+                    <h5 class="fw-bold">Create Your Profile</h5>
+                    <p class="text-muted small mb-0">Select the skills you can teach and what you're excited to learn, with your availability.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="p-4 bg-white rounded-3 border h-100 position-relative">
+                    <div class="fw-bold text-secondary display-6 mb-2">02</div>
+                    <h5 class="fw-bold">Get Matched</h5>
+                    <p class="text-muted small mb-0">Our rule-based engine suggests compatible peer mentors with mutual skill compatibility.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="p-4 bg-white rounded-3 border h-100 position-relative">
+                    <div class="fw-bold text-info display-6 mb-2">03</div>
+                    <h5 class="fw-bold">Book & Meet</h5>
+                    <p class="text-muted small mb-0">Coordinate dates, launch the private session room, and practice practical skills hands-on.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="p-4 bg-white rounded-3 border h-100 position-relative">
+                    <div class="fw-bold text-success display-6 mb-2">04</div>
+                    <h5 class="fw-bold">Grow & Track</h5>
+                    <p class="text-muted small mb-0">Earn credits upon completion and watch your Personal Skill Map expand dynamically.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED SKILLS -->
+<section class="py-5 bg-white border-top">
+    <div class="container py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+            <div>
+                <span class="badge bg-secondary-subtle text-secondary px-3 py-1 rounded-pill fw-semibold mb-2">Explore Directory</span>
+                <h2 class="fw-bold mb-0">Featured Skills</h2>
+            </div>
+            <a href="{{ url_for('skills.explore') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                <span>View All Skills</span>
+                <i data-lucide="arrow-right" style="width: 16px;"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for s in featured_skills %}
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card card-custom h-100 p-3 card-hover-elevate">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-light text-primary border p-2">
+                                <i data-lucide="{{ s.icon or 'code' }}" style="width: 18px; height: 18px;"></i>
+                            </span>
+                            <span class="small text-muted">{{ s.category }}</span>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">{{ s.skill_name }}</h6>
+                        <p class="text-muted small mb-3 text-truncate">{{ s.description }}</p>
+                        <a href="{{ url_for('skills.explore', q=s.skill_name) }}" class="btn btn-sm btn-light border text-primary fw-semibold mt-auto w-100">
+                            Find Mentors
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CALL TO ACTION -->
+<section class="py-5 text-center text-white" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);">
+    <div class="container py-4">
+        <h2 class="display-6 fw-bold mb-3">Start Sharing What You Know. Discover What You Can Learn.</h2>
+        <p class="lead max-w-700 mx-auto mb-4 opacity-90">
+            Join hundreds of forward-thinking students already accelerating their skills together.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg text-primary fw-bold px-4 shadow">
+                Join SkillSwap Free
+            </a>
+            <a href="{{ url_for('skills.explore') }}" class="btn btn-outline-light btn-lg px-4">
+                Explore Skills First
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

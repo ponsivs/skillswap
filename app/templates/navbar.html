@@ -1,0 +1,123 @@
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+        <!-- Brand Logo -->
+        <a class="navbar-brand-logo" href="{{ url_for('main.index') }}">
+            <div class="logo-icon">
+                <i data-lucide="repeat" style="width: 20px; height: 20px;"></i>
+            </div>
+            <span>SkillSwap</span>
+        </a>
+
+        <!-- Mobile Toggler -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i data-lucide="menu"></i>
+        </button>
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto ms-lg-4 mb-2 mb-lg-0 gap-1">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom {{ 'active' if request.endpoint == 'main.index' }}" href="{{ url_for('main.index') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom {{ 'active' if 'skills.explore' in request.endpoint }}" href="{{ url_for('skills.explore') }}">Explore Skills</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom {{ 'active' if 'matching' in request.endpoint }}" href="{{ url_for('matching.index') }}">Find Matches</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom {{ 'active' if 'how_it_works' in request.endpoint }}" href="{{ url_for('main.how_it_works') }}">How It Works</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom {{ 'active' if 'about' in request.endpoint }}" href="{{ url_for('main.about') }}">About Us</a>
+                </li>
+            </ul>
+
+            <!-- Right-hand side Auth / Navigation -->
+            <div class="d-flex align-items-center gap-3">
+                {% if current_user.is_authenticated %}
+                    <!-- Credits Pill -->
+                    <a href="{{ url_for('credits.index') }}" class="badge-custom badge-credits text-decoration-none shadow-sm" title="Your Available Knowledge Credits">
+                        <i data-lucide="coins" style="width: 14px; height: 14px;"></i>
+                        <span>{{ current_user.credits_balance }} Credits</span>
+                    </a>
+
+                    <!-- Notifications Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-light rounded-circle p-2 position-relative shadow-sm border" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                            <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+                            {% if unread_notifications_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                                    {{ unread_notifications_count }}
+                                </span>
+                            {% endif %}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end notif-dropdown-menu">
+                            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold">Notifications</h6>
+                                {% if unread_notifications_count > 0 %}
+                                    <form action="{{ url_for('notifications.mark_all_read') }}" method="POST" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-link p-0 text-decoration-none small text-muted" style="font-size: 0.75rem;">Mark all as read</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                            <div class="list-group list-group-flush">
+                                {% if recent_notifications %}
+                                    {% for notif in recent_notifications %}
+                                        <a href="{{ url_for('notifications.mark_read', notif_id=notif.id) }}" class="notif-item {{ 'unread' if not notif.is_read }} text-decoration-none">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="fw-semibold text-dark small">{{ notif.title }}</span>
+                                                <span class="text-muted" style="font-size: 0.7rem;">{{ notif.created_at.strftime('%b %d') }}</span>
+                                            </div>
+                                            <p class="mb-0 text-muted small text-truncate">{{ notif.message }}</p>
+                                        </a>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="p-4 text-center text-muted small">
+                                        <i data-lucide="bell-off" class="mb-1 text-secondary"></i>
+                                        <p class="mb-0">No new notifications</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="p-2 text-center border-top bg-light">
+                                <a href="{{ url_for('notifications.index') }}" class="small text-primary fw-semibold text-decoration-none">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Menu Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-light rounded-pill p-1 ps-2 pe-3 d-flex align-items-center gap-2 border shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ current_user.avatar_url or 'https://api.dicebear.com/7.x/initials/svg?seed=' + current_user.full_name }}" alt="Avatar" class="rounded-circle" style="width: 28px; height: 28px; object-fit: cover;">
+                            <span class="small fw-bold text-dark d-none d-md-inline">{{ current_user.full_name.split()[0] }}</span>
+                            <i data-lucide="chevron-down" style="width: 14px; height: 14px;" class="text-muted"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border rounded-3 mt-1">
+                            <li class="px-3 py-2 border-bottom">
+                                <div class="fw-bold text-dark">{{ current_user.full_name }}</div>
+                                <div class="small text-muted">{{ current_user.email }}</div>
+                            </li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('dashboard.index') }}"><i data-lucide="layout-dashboard" class="me-2" style="width: 16px;"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('skills.map_view') }}"><i data-lucide="network" class="me-2" style="width: 16px;"></i>My Skill Map</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('sessions.index') }}"><i data-lucide="calendar" class="me-2" style="width: 16px;"></i>Learning Sessions</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('skills.manage') }}"><i data-lucide="layers" class="me-2" style="width: 16px;"></i>Manage My Skills</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('profile.view_profile', user_id=current_user.id) }}"><i data-lucide="user" class="me-2" style="width: 16px;"></i>My Profile</a></li>
+                            {% if current_user.is_admin %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item py-2 text-primary fw-semibold" href="{{ url_for('admin.index') }}"><i data-lucide="shield" class="me-2" style="width: 16px;"></i>Admin Portal</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2 text-danger" href="{{ url_for('auth.logout') }}"><i data-lucide="log-out" class="me-2" style="width: 16px;"></i>Logout</a></li>
+                        </ul>
+                    </div>
+
+                {% else %}
+                    <!-- Guest Actions -->
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm px-3">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-gradient btn-sm px-3">Get Started</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

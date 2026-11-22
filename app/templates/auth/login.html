@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Login — SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <!-- Card -->
+            <div class="card card-custom p-4 p-md-5 shadow-lg border-0">
+                <div class="text-center mb-4">
+                    <div class="navbar-brand-logo justify-content-center mb-2">
+                        <div class="logo-icon">
+                            <i data-lucide="repeat" style="width: 20px; height: 20px;"></i>
+                        </div>
+                        <span>SkillSwap</span>
+                    </div>
+                    <h3 class="fw-bold">Welcome Back</h3>
+                    <p class="text-muted small">Log in to continue sharing skills and learning with peers</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label small fw-semibold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i data-lucide="mail" style="width: 16px;"></i></span>
+                            <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="name@university.edu" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <label for="password" class="form-label small fw-semibold">Password</label>
+                            <a href="#" class="small text-muted">Forgot password?</a>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i data-lucide="lock" style="width: 16px;"></i></span>
+                            <input type="password" class="form-control border-start-0 border-end-0" id="password" name="password" placeholder="••••••••" required>
+                            <button class="btn btn-light border border-start-0 password-toggle-btn" type="button" data-target="password">
+                                <i data-lucide="eye" style="width: 16px;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                        <label class="form-check-label small text-muted" for="remember">Remember me on this browser</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Realistic Demo Accounts Shortcut Helper for evaluation -->
+                <div class="mt-4 p-3 bg-light rounded-3 border">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="demo-indicator"><i data-lucide="sparkles" style="width: 12px;"></i> Demo Credentials</span>
+                        <span class="text-muted small" style="font-size: 0.72rem;">One-Click Quick Login</span>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary text-start d-flex justify-content-between align-items-center" onclick="fillLogin('alex@skillswap.edu', 'StudentPass123!')">
+                            <span><strong>Alex Rivera</strong> (Student A - Python / UI/UX)</span>
+                            <i data-lucide="arrow-right" style="width: 14px;"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary text-start d-flex justify-content-between align-items-center" onclick="fillLogin('priya@skillswap.edu', 'StudentPass123!')">
+                            <span><strong>Priya Sharma</strong> (Student B - Reciprocal Match)</span>
+                            <i data-lucide="arrow-right" style="width: 14px;"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary text-start d-flex justify-content-between align-items-center" onclick="fillLogin('admin@skillswap.edu', 'AdminPass123!')">
+                            <span><strong>Admin Portal</strong> (Admin Director)</span>
+                            <i data-lucide="shield" style="width: 14px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="small text-muted mb-0">Don't have an account? <a href="{{ url_for('auth.register') }}" class="fw-semibold">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function fillLogin(email, password) {
+    document.getElementById('email').value = email;
+    document.getElementById('password').value = password;
+}
+</script>
+{% endblock %}

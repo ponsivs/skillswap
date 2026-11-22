@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Onboarding — SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Progress Tracker -->
+            <div class="card card-custom p-4 shadow-sm mb-4 border-0">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-bold mb-0">Student Onboarding Wizard</h5>
+                    <span class="badge bg-primary text-white">6 Simple Steps</span>
+                </div>
+                <div class="progress" style="height: 6px;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <div class="card card-custom p-4 p-md-5 shadow-lg border-0">
+                <form method="POST" action="{{ url_for('auth.onboarding') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <!-- Step 1: Basic Profile Information -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                            <span class="badge bg-primary rounded-circle">1</span> Basic Profile Information
+                        </h5>
+                        <p class="text-muted small">Introduce yourself to potential peer mentors.</p>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Short Bio & Introduction</label>
+                            <textarea class="form-control" name="bio" rows="2" placeholder="e.g. CS sophomore passionate about Python and APIs. Looking to exchange skills with design students!">{{ current_user.bio or '' }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Institution / University</label>
+                            <input type="text" class="form-control" name="institution" value="{{ current_user.institution or '' }}" placeholder="e.g. Stanford University">
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Step 2: Select Skills You Can Teach -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                            <span class="badge bg-success rounded-circle">2</span> Select Skills You Can Teach
+                        </h5>
+                        <p class="text-muted small">Choose at least 1 or 2 skills you feel comfortable guiding a peer in.</p>
+                        
+                        <div class="row g-2">
+                            {% for skill in skills %}
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded d-flex align-items-center justify-content-between bg-light">
+                                        <div class="form-check mb-0">
+                                            <input class="form-check-input" type="checkbox" name="teach_skills" value="{{ skill.id }}" id="teach_{{ skill.id }}">
+                                            <label class="form-check-label small fw-semibold" for="teach_{{ skill.id }}">
+                                                {{ skill.skill_name }}
+                                            </label>
+                                        </div>
+                                        <select name="teach_level_{{ skill.id }}" class="form-select form-select-sm" style="width: 120px;">
+                                            <option value="Intermediate" selected>Intermediate</option>
+                                            <option value="Advanced">Advanced</option>
+                                            <option value="Master">Master</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Step 3: Select Skills You Want to Learn -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                            <span class="badge bg-info rounded-circle">3</span> Select Skills You Want to Learn
+                        </h5>
+                        <p class="text-muted small">What skills are you excited to build next? Our matching engine uses this to find partners.</p>
+                        
+                        <div class="row g-2">
+                            {% for skill in skills %}
+                                <div class="col-md-6">
+                                    <div class="p-2 border rounded d-flex align-items-center justify-content-between bg-light">
+                                        <div class="form-check mb-0">
+                                            <input class="form-check-input" type="checkbox" name="learn_skills" value="{{ skill.id }}" id="learn_{{ skill.id }}">
+                                            <label class="form-check-label small fw-semibold" for="learn_{{ skill.id }}">
+                                                {{ skill.skill_name }}
+                                            </label>
+                                        </div>
+                                        <select name="learn_level_{{ skill.id }}" class="form-select form-select-sm" style="width: 120px;">
+                                            <option value="Beginner" selected>Beginner</option>
+                                            <option value="Intermediate">Intermediate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Step 4 & 5: Availability & Schedule -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                            <span class="badge bg-secondary rounded-circle">4</span> Availability & Scheduling
+                        </h5>
+                        <p class="text-muted small">When are you typically free for 45-minute peer sessions?</p>
+                        <select class="form-select" name="availability">
+                            <option value="Weekday Evenings & Weekends" selected>Weekday Evenings & Weekends</option>
+                            <option value="Weekends Only">Weekends Only</option>
+                            <option value="Weekday Mornings & Afternoons">Weekday Mornings & Afternoons</option>
+                            <option value="Flexible / Anytime by Request">Flexible / Anytime by Request</option>
+                        </select>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Step 6: Review & Complete -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted"><i data-lucide="check" class="text-success me-1"></i> You can adjust these anytime from your profile</span>
+                        <button type="submit" class="btn btn-gradient px-4 py-2">
+                            Complete Onboarding & Enter Dashboard
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

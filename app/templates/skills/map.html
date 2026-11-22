@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Personalised Skill Map — SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <h2 class="fw-bold mb-0">Personalised Interactive Skill Map</h2>
+                <span class="badge bg-primary text-white">Standout Feature</span>
+            </div>
+            <p class="text-muted small mb-0">Interactive visual network of your academic and practical learning journey.</p>
+        </div>
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+            <a href="{{ url_for('skills.manage') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                <i data-lucide="edit" style="width: 14px;"></i> Edit My Skills
+            </a>
+            <a href="{{ url_for('matching.index') }}" class="btn btn-gradient btn-sm d-flex align-items-center gap-1">
+                <i data-lucide="sparkles" style="width: 14px;"></i> Find Mentors
+            </a>
+        </div>
+    </div>
+
+    <!-- Legend Bar -->
+    <div class="p-3 bg-white rounded-3 border mb-3 shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-2 small">
+        <div class="d-flex flex-wrap align-items-center gap-3">
+            <span class="fw-bold text-dark">Legend:</span>
+            <span class="d-flex align-items-center gap-1"><span style="width: 10px; height: 10px; border-radius: 50%; background: #4338CA; display: inline-block;"></span> Center Hub</span>
+            <span class="d-flex align-items-center gap-1"><span style="width: 10px; height: 10px; border-radius: 50%; background: #7C3AED; display: inline-block;"></span> Categories</span>
+            <span class="d-flex align-items-center gap-1"><span style="width: 10px; height: 10px; border-radius: 50%; background: #16A34A; display: inline-block;"></span> Can Teach</span>
+            <span class="d-flex align-items-center gap-1"><span style="width: 10px; height: 10px; border-radius: 50%; background: #2563EB; display: inline-block;"></span> Learning</span>
+            <span class="d-flex align-items-center gap-1"><span style="width: 10px; height: 10px; border-radius: 50%; background: #0D9488; display: inline-block;"></span> Completed</span>
+            <span class="d-flex align-items-center gap-1"><span style="width: 10px; height: 10px; border-radius: 50%; background: #F59E0B; display: inline-block;"></span> Learning Goal</span>
+        </div>
+        <div class="text-muted" style="font-size: 0.75rem;">
+            <i data-lucide="mouse-pointer" style="width: 12px;"></i> Drag nodes to reorganize &bull; Click to inspect
+        </div>
+    </div>
+
+    <!-- Interactive Canvas & Sidebar Container -->
+    <div class="skillmap-container">
+        <canvas id="skillmapCanvas" class="skillmap-canvas"></canvas>
+        <div id="skillmapSidebar" class="skillmap-sidebar">
+            <div class="text-center py-4">
+                <div class="spinner-border spinner-border-sm text-info mb-2" role="status"></div>
+                <div class="small text-secondary">Loading your skill network...</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/skillmap.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        new SkillMap('skillmapCanvas', 'skillmapSidebar');
+    });
+</script>
+{% endblock %}

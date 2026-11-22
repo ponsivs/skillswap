@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Skills — SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Explore Skills Directory</h2>
+            <p class="text-muted small mb-0">Browse student-taught skills across technology, design, communication, and academics.</p>
+        </div>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('skills.manage') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+                <i data-lucide="plus" style="width: 16px;"></i> Add a Skill I Can Teach
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Search & Category Filters -->
+    <div class="card card-custom p-3 mb-4 shadow-sm">
+        <form method="GET" action="{{ url_for('skills.explore') }}" class="row g-2 align-items-center">
+            <div class="col-lg-5 col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i data-lucide="search" style="width: 16px;"></i></span>
+                    <input type="text" name="q" value="{{ query or '' }}" class="form-control border-start-0" placeholder="Search skills, topics, tools (e.g. Python, UI/UX)...">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <select name="category" class="form-select">
+                    <option value="All" {{ 'selected' if not selected_category or selected_category == 'All' }}>All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat }}" {{ 'selected' if selected_category == cat }}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-lg-3 col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    Apply Filter
+                </button>
+                {% if query or (selected_category and selected_category != 'All') %}
+                    <a href="{{ url_for('skills.explore') }}" class="btn btn-light border" title="Clear Filters">
+                        <i data-lucide="x" style="width: 16px;"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Skills Grid -->
+    <div class="row g-4">
+        {% if enhanced_skills %}
+            {% for item in enhanced_skills %}
+                {% set s = item.skill %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card card-custom h-100 p-4 card-hover-elevate d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-primary-subtle text-primary border small">{{ s.category }}</span>
+                            <span class="small text-muted d-flex align-items-center gap-1">
+                                <i data-lucide="users" style="width: 14px;"></i> {{ item.total_teachers }} Mentors
+                            </span>
+                        </div>
+
+                        <h5 class="fw-bold text-dark mb-1">{{ s.skill_name }}</h5>
+                        <p class="text-muted small mb-3 flex-grow-1">{{ s.description or 'Practical peer-to-peer learning.' }}</p>
+
+                        <!-- Available Mentors Preview -->
+                        <div class="border-top pt-3 mt-auto">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    {% if item.teachers %}
+                                        <div class="d-flex me-2">
+                                            {% for t in item.teachers %}
+                                                <img src="{{ t.avatar_url or 'https://api.dicebear.com/7.x/bottts/svg?seed=' + t.full_name }}" class="rounded-circle border border-white" style="width: 28px; height: 28px; margin-right: -6px;" title="{{ t.full_name }} ({{ t.institution }})">
+                                            {% endfor %}
+                                        </div>
+                                        <span class="small text-muted" style="font-size: 0.75rem;">{{ item.teachers[0].full_name.split()[0] }}{% if item.total_teachers > 1 %} + others{% endif %}</span>
+                                    {% else %}
+                                        <span class="small text-muted fst-italic" style="font-size: 0.75rem;">Be the first to teach!</span>
+                                    {% endif %}
+                                </div>
+
+                                {% if item.teachers %}
+                                    <a href="{{ url_for('profile.view_profile', user_id=item.teachers[0].id) }}" class="btn btn-sm btn-outline-primary">
+                                        View Mentor
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('skills.manage') }}" class="btn btn-sm btn-light border text-success">
+                                        Teach this
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <i data-lucide="search" class="text-muted mb-2" style="width: 48px; height: 48px;"></i>
+                <h5 class="fw-bold">No skills matched your search</h5>
+                <p class="text-muted small">Try searching for other terms or clear your category filter.</p>
+                <a href="{{ url_for('skills.explore') }}" class="btn btn-outline-primary btn-sm">Clear All Filters</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

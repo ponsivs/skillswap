@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard — SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Header & Demo Indicator -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <h2 class="fw-bold mb-0">Welcome back, {{ current_user.full_name }}!</h2>
+                <span class="demo-indicator" title="Demonstration EdTech Environment">Demo Account</span>
+            </div>
+            <p class="text-muted small mb-0">{{ current_user.institution or 'SkillSwap Member' }} &bull; {{ current_user.education_level or 'Student' }}</p>
+        </div>
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+            <a href="{{ url_for('matching.index') }}" class="btn btn-gradient btn-sm d-flex align-items-center gap-1">
+                <i data-lucide="sparkles" style="width: 16px;"></i> Find Matches
+            </a>
+            <a href="{{ url_for('skills.map_view') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+                <i data-lucide="network" style="width: 16px;"></i> My Skill Map
+            </a>
+        </div>
+    </div>
+
+    <!-- 5 Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <!-- Can Teach -->
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div>
+                    <div class="text-muted small fw-semibold">Skills I Can Teach</div>
+                    <div class="fs-3 fw-bold text-success">{{ teach_count }}</div>
+                    <span class="badge bg-success-subtle text-success small" style="font-size: 0.7rem;">Active Mentorship</span>
+                </div>
+                <div class="stat-icon-wrapper bg-success-subtle text-success">
+                    <i data-lucide="award"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Want to Learn -->
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div>
+                    <div class="text-muted small fw-semibold">Skills I Want to Learn</div>
+                    <div class="fs-3 fw-bold text-primary">{{ learn_count }}</div>
+                    <span class="badge bg-primary-subtle text-primary small" style="font-size: 0.7rem;">In Progress</span>
+                </div>
+                <div class="stat-icon-wrapper bg-primary-subtle text-primary">
+                    <i data-lucide="book-open"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Credits -->
+        <div class="col-xl col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div>
+                    <div class="text-muted small fw-semibold">Available Credits</div>
+                    <div class="fs-3 fw-bold text-warning">{{ credits_balance }}</div>
+                    <a href="{{ url_for('credits.index') }}" class="small text-decoration-none text-muted" style="font-size: 0.75rem;">View Ledger &rarr;</a>
+                </div>
+                <div class="stat-icon-wrapper bg-warning-subtle text-warning">
+                    <i data-lucide="coins"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Sessions -->
+        <div class="col-xl col-md-6 col-sm-6">
+            <div class="stat-card">
+                <div>
+                    <div class="text-muted small fw-semibold">Completed Sessions</div>
+                    <div class="fs-3 fw-bold text-secondary">{{ completed_sessions }}</div>
+                    <span class="badge bg-secondary-subtle text-secondary small" style="font-size: 0.7rem;">Verified Exchanges</span>
+                </div>
+                <div class="stat-icon-wrapper bg-secondary-subtle text-secondary">
+                    <i data-lucide="check-circle-2"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Progress -->
+        <div class="col-xl col-md-6 col-sm-12">
+            <div class="stat-card">
+                <div class="w-100 pe-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted small fw-semibold">Average Progress</span>
+                        <span class="fw-bold text-info">{{ avg_progress }}%</span>
+                    </div>
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar bg-info" style="width: {{ avg_progress }}%;"></div>
+                    </div>
+                    <div class="text-muted small mt-2" style="font-size: 0.72rem;">Towards Mastery</div>
+                </div>
+                <div class="stat-icon-wrapper bg-info-subtle text-info">
+                    <i data-lucide="trending-up"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Row -->
+    <div class="row g-4 mb-4">
+        <!-- Recommended Skill Partners (Left Column) -->
+        <div class="col-lg-8">
+            <div class="card card-custom p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-0">Recommended Skill Partners</h5>
+                        <p class="text-muted small mb-0">Intelligent reciprocal and peer learning matches</p>
+                    </div>
+                    <a href="{{ url_for('matching.index') }}" class="btn btn-outline-primary btn-sm">View All Matches</a>
+                </div>
+
+                {% if recommendations %}
+                    <div class="d-flex flex-column gap-3">
+                        {% for match in recommendations %}
+                            <div class="p-3 border rounded-3 bg-light d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ match.user.avatar_url or 'https://api.dicebear.com/7.x/bottts/svg?seed=' + match.user.full_name }}" class="rounded-circle border" style="width: 50px; height: 50px;">
+                                    <div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a href="{{ url_for('profile.view_profile', user_id=match.user.id) }}" class="fw-bold text-dark text-decoration-none hover-primary">
+                                                {{ match.user.full_name }}
+                                            </a>
+                                            {% if match.reciprocal %}
+                                                <span class="badge-custom badge-reciprocal" style="font-size: 0.7rem;">
+                                                    <i data-lucide="repeat" style="width: 12px;"></i> Mutual Swap
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="small text-muted mb-1">{{ match.user.institution or 'Peer Student' }}</div>
+                                        <div class="small text-secondary">
+                                            <i data-lucide="check" class="text-success me-1" style="width: 14px;"></i> {{ match.reasons[0] }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 ms-auto ms-md-0">
+                                    <div class="text-center px-2">
+                                        <span class="fw-bold text-success fs-5">{{ match.compatibility_score }}%</span>
+                                        <div class="text-muted" style="font-size: 0.65rem;">MATCH</div>
+                                    </div>
+                                    <a href="{{ url_for('sessions.request_session', mentor_id=match.user.id) }}" class="btn btn-primary btn-sm px-3 text-nowrap">
+                                        Request Session
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        <i data-lucide="users" class="mb-2 text-secondary" style="width: 32px; height: 32px;"></i>
+                        <p class="mb-2">No active matches found. Add more skills you can teach or want to learn!</p>
+                        <a href="{{ url_for('skills.manage') }}" class="btn btn-outline-primary btn-sm">Configure My Skills</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Active & Upcoming Sessions -->
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Active Learning Sessions</h5>
+                    <a href="{{ url_for('sessions.index') }}" class="btn btn-outline-primary btn-sm">Manage Sessions</a>
+                </div>
+
+                {% if active_sessions %}
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover mb-0">
+                            <thead class="table-light small">
+                                <tr>
+                                    <th>Skill</th>
+                                    <th>Partner</th>
+                                    <th>Role</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="small">
+                                {% for s in active_sessions %}
+                                    <tr>
+                                        <td><strong class="text-dark">{{ s.skill.skill_name }}</strong></td>
+                                        <td>
+                                            {% if s.teacher_id == current_user.id %}
+                                                {{ s.learner.full_name }}
+                                            {% else %}
+                                                {{ s.teacher.full_name }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if s.teacher_id == current_user.id %}
+                                                <span class="badge bg-success-subtle text-success">Teacher</span>
+                                            {% else %}
+                                                <span class="badge bg-primary-subtle text-primary">Learner</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ s.session_date.strftime('%b %d, %H:%M') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'warning' if s.status == 'pending' else 'success' }}-subtle text-{{ 'warning' if s.status == 'pending' else 'success' }}">
+                                                {{ s.status|capitalize }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('sessions.index') }}" class="btn btn-light btn-sm border">View</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        <i data-lucide="calendar" class="mb-2 text-secondary" style="width: 32px; height: 32px;"></i>
+                        <p class="mb-0">You have no pending or upcoming sessions right now.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column (Skill Map Preview & Quick Actions) -->
+        <div class="col-lg-4">
+            <!-- Skill Map Preview Box -->
+            <div class="card card-custom p-4 mb-4 bg-dark text-white border-0 shadow">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="fw-bold text-white mb-0 d-flex align-items-center gap-2">
+                        <i data-lucide="network" class="text-cyan"></i> Personal Skill Map
+                    </h6>
+                    <span class="badge bg-primary">Dynamic Graph</span>
+                </div>
+                <p class="small text-secondary mb-3">Visual representation of your skill nodes, mastery levels, and categories.</p>
+                
+                <div class="p-3 rounded-3 bg-black border border-secondary text-center my-2">
+                    <div class="d-flex justify-content-around py-2">
+                        <div>
+                            <div class="fs-4 fw-bold text-success">{{ teach_count }}</div>
+                            <div class="text-muted" style="font-size: 0.68rem;">CAN TEACH</div>
+                        </div>
+                        <div class="border-end border-secondary"></div>
+                        <div>
+                            <div class="fs-4 fw-bold text-primary">{{ learn_count }}</div>
+                            <div class="text-muted" style="font-size: 0.68rem;">LEARNING</div>
+                        </div>
+                        <div class="border-end border-secondary"></div>
+                        <div>
+                            <div class="fs-4 fw-bold text-info">{{ current_user.completed_skills|length }}</div>
+                            <div class="text-muted" style="font-size: 0.68rem;">COMPLETED</div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{{ url_for('skills.map_view') }}" class="btn btn-outline-info btn-sm w-100 mt-2">
+                    Open Full Interactive Skill Map &rarr;
+                </a>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card card-custom p-4 mb-4">
+                <h6 class="fw-bold mb-3">Quick Actions</h6>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('matching.index') }}" class="btn btn-light border text-start d-flex align-items-center gap-2 text-dark small py-2">
+                        <i data-lucide="search" class="text-primary" style="width: 16px;"></i> Find a Skill Partner
+                    </a>
+                    <a href="{{ url_for('skills.manage') }}" class="btn btn-light border text-start d-flex align-items-center gap-2 text-dark small py-2">
+                        <i data-lucide="plus-circle" class="text-success" style="width: 16px;"></i> Add a Skill to Profile
+                    </a>
+                    <a href="{{ url_for('skills.explore') }}" class="btn btn-light border text-start d-flex align-items-center gap-2 text-dark small py-2">
+                        <i data-lucide="compass" class="text-secondary" style="width: 16px;"></i> Explore Skills Catalog
+                    </a>
+                    <a href="{{ url_for('profile.edit_profile') }}" class="btn btn-light border text-start d-flex align-items-center gap-2 text-dark small py-2">
+                        <i data-lucide="settings" class="text-muted" style="width: 16px;"></i> Edit My Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent Activity Ledger -->
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">Recent Activity</h6>
+                    <a href="{{ url_for('credits.index') }}" class="small text-muted">Ledger</a>
+                </div>
+                {% if recent_activities %}
+                    <div class="d-flex flex-column gap-2 small">
+                        {% for tx in recent_activities %}
+                            <div class="p-2 rounded border bg-light d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-semibold text-dark" style="font-size: 0.78rem;">{{ tx.description }}</div>
+                                    <div class="text-muted" style="font-size: 0.68rem;">{{ tx.created_at.strftime('%b %d, %H:%M') }}</div>
+                                </div>
+                                <span class="fw-bold {{ 'text-success' if tx.amount > 0 else 'text-danger' }}">
+                                    {{ '+' if tx.amount > 0 else '' }}{{ tx.amount }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="small text-muted mb-0">No transaction activity yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

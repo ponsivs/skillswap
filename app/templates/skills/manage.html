@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage My Skills — SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Manage My Skills</h2>
+            <p class="text-muted small mb-0">Add skills you can teach to earn credits, or skills you want to learn to update your Personal Skill Map.</p>
+        </div>
+        <a href="{{ url_for('skills.map_view') }}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+            <i data-lucide="network" style="width: 16px;"></i> View Interactive Map
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Add Skill Form (Left) -->
+        <div class="col-lg-5">
+            <div class="card card-custom p-4 shadow-sm">
+                <h5 class="fw-bold mb-3">Add a Skill</h5>
+                <form method="POST" action="{{ url_for('skills.manage') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="action" value="add">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Select Skill</label>
+                        <select name="skill_id" class="form-select" required>
+                            <option value="">-- Choose Skill from Catalog --</option>
+                            {% for s in all_skills %}
+                                <option value="{{ s.id }}">{{ s.skill_name }} ({{ s.category }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Skill Direction</label>
+                        <select name="skill_type" class="form-select">
+                            <option value="teach">I Can Teach This (Mentorship)</option>
+                            <option value="learn" selected>I Want to Learn This (Learner)</option>
+                            <option value="interested">Future Learning Goal</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Proficiency Level</label>
+                        <select name="proficiency_level" class="form-select">
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate" selected>Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Master">Master</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Personal Note / Focus</label>
+                        <input type="text" name="notes" class="form-control" placeholder="e.g. Focused on building APIs or learning wireframing">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Add to Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Current Skills (Right) -->
+        <div class="col-lg-7">
+            <div class="card card-custom p-4 shadow-sm">
+                <h5 class="fw-bold mb-3">My Configured Skills ({{ user_skills|length }})</h5>
+
+                {% if user_skills %}
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover">
+                            <thead class="table-light small">
+                                <tr>
+                                    <th>Skill</th>
+                                    <th>Type</th>
+                                    <th>Proficiency</th>
+                                    <th>Progress</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody class="small">
+                                {% for us in user_skills %}
+                                    <tr>
+                                        <td>
+                                            <div class="fw-bold text-dark">{{ us.skill.skill_name }}</div>
+                                            <div class="text-muted" style="font-size: 0.7rem;">{{ us.skill.category }}</div>
+                                        </td>
+                                        <td>
+                                            {% if us.skill_type == 'teach' %}
+                                                <span class="badge bg-success-subtle text-success">Can Teach</span>
+                                            {% elif us.skill_type == 'completed' %}
+                                                <span class="badge bg-info-subtle text-info">Completed</span>
+                                            {% elif us.skill_type == 'learn' %}
+                                                <span class="badge bg-primary-subtle text-primary">Learning</span>
+                                            {% else %}
+                                                <span class="badge bg-warning-subtle text-warning">Goal</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ us.proficiency_level }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress flex-grow-1" style="height: 6px; width: 60px;">
+                                                    <div class="progress-bar bg-primary" style="width: {{ us.progress_percentage }}%;"></div>
+                                                </div>
+                                                <span class="text-muted" style="font-size: 0.7rem;">{{ us.progress_percentage }}%</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <form method="POST" action="{{ url_for('skills.manage') }}" onsubmit="return confirm('Remove this skill?');">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <input type="hidden" name="action" value="remove">
+                                                <input type="hidden" name="user_skill_id" value="{{ us.id }}">
+                                                <button type="submit" class="btn btn-sm btn-light text-danger p-1">
+                                                    <i data-lucide="trash-2" style="width: 14px;"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        <i data-lucide="layers" class="mb-2 text-secondary" style="width: 32px; height: 32px;"></i>
+                        <p class="mb-0">You have no skills listed yet. Add skills on the left to start finding matches!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

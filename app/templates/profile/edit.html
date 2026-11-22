@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile — SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card card-custom p-4 p-md-5 shadow-sm border-0">
+                <h3 class="fw-bold mb-4">Edit Profile</h3>
+
+                <form method="POST" action="{{ url_for('profile.edit_profile') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ current_user.full_name }}" required>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">College / University</label>
+                            <input type="text" name="institution" class="form-control" value="{{ current_user.institution or '' }}" placeholder="e.g. Stanford University">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Education Level</label>
+                            <input type="text" name="education_level" class="form-control" value="{{ current_user.education_level or '' }}" placeholder="e.g. Undergraduate (Year 2)">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Short Bio & Introduction</label>
+                        <textarea name="bio" class="form-control" rows="3">{{ current_user.bio or '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">General Availability for Sessions</label>
+                        <input type="text" name="availability" class="form-control" value="{{ current_user.availability or '' }}" placeholder="e.g. Weekday Evenings & Weekends">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-semibold">Avatar Style / Seed</label>
+                        <input type="text" name="avatar_choice" class="form-control" placeholder="Enter any name/seed to generate custom avatar (e.g. Alex, Maya)">
+                        <div class="form-text small text-muted">Leave empty to keep default initials avatar.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('profile.view_profile', user_id=current_user.id) }}" class="btn btn-light border">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
